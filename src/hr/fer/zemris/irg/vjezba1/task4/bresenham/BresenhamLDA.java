@@ -61,19 +61,19 @@ public class BresenhamLDA {
 	}
 
 	public void drawLine(int xs, int ys, int xe, int ye) {
+		this.p = new PointPair(xs, ys, xe, ye);
 		if(xs <= xe) {
-			this.p = new PointPair(xs, ys, xe, ye);
 			if(ys <= ye) {
-				bresenhamPositive(xs, ys, xe, ye);
+				bresenhamPositive();
 			} else {
-				bresenhamNegative(xs, ys, xe, ye);
+				bresenhamNegative();
 			}
 		} else {
-			this.p = new PointPair(xs, ys, xe, ye);
+			p.swapPoints();
 			if(ys >= ye) {
-				bresenhamPositive(xe, ye, xs, ys);
+				bresenhamPositive();
 			} else {
-				bresenhamNegative(xe, ye, xs, ys);
+				bresenhamNegative();
 			}
 		}
 	}
@@ -142,13 +142,11 @@ public class BresenhamLDA {
 		}.draw(pixel);
 	}
 
-	private void bresenhamPositive(int xs, int ys, int xe, int ye) {
-		this.p = new PointPair(xs, ys, xe, ye);
+	private void bresenhamPositive() {
 		bresenhamStrategy((p.ye - p.ys) <= p.xe - p.xs, this::bresenhamPositiveStrategy, PointPair::swapXYCoordinates);
 	}
 
-	private void bresenhamNegative(int xs, int ys, int xe, int ye) {
-		this.p = new PointPair(xs, ys, xe, ye);
+	private void bresenhamNegative() {
 		bresenhamStrategy(-(p.ye - p.ys) <= p.xe - p.xs, this::bresenhamNegativeStrategy,
 				PointPair::swapStartEndXYCoordinates);
 	}
