@@ -10,8 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.util.Objects;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -28,9 +30,11 @@ import hr.fer.zemris.irg.vjezba1.task4.model.CustomModel;
 import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModel;
 import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModelListener;
 
-public class LineDrawing extends JFrame {
+public class LineDrawing2 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final int Y_OFFSET = 20;
 
 	static {
 		GLProfile.initSingleton();
@@ -42,10 +46,43 @@ public class LineDrawing extends JFrame {
 	private Point start;
 	private Point end;
 
+	private Runnable glLine;
+
 	private boolean firstClick;
 
-	public LineDrawing() {
+	public LineDrawing2() {
 		initGUI();
+		try {
+			askForPoints();
+		} catch (Exception e) {
+			System.err.println("Invalid coordinates.");
+			System.exit(1);
+		}
+	}
+
+	private void askForPoints() {
+		start = getPoint("Start");
+		end = getPoint("End");
+
+		glLine = () -> {
+			GL2 gl2 = canvas.getGL().getGL2();
+			gl2.glBegin(GL.GL_LINES);
+			gl2.glVertex2i(start.x, start.y + Y_OFFSET);
+			gl2.glVertex2i(end.x, end.y + Y_OFFSET);
+			gl2.glEnd();
+		};
+		model.add(new Line(start, end));
+	}
+
+	private Point getPoint(String pointName) {
+		String point = JOptionPane.showInputDialog(
+				LineDrawing2.this,
+				"(x,y):",
+				pointName + " point",
+				JOptionPane.QUESTION_MESSAGE
+		);
+		String[] split = point.split(",");
+		return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
 	}
 
 	private void initGUI() {
@@ -66,12 +103,12 @@ public class LineDrawing extends JFrame {
 		public CustomCanvas(DrawingModel model) {
 			this.model = model;
 			model.addDrawingModelListener(this);
-			// Reagiranje na pritiske tipki na misu...
-			addMouseListener(mouseClick);
-			// Reagiranje na pomicanje pokazivaca misa...
-			addMouseMotionListener(mouseMotion);
-			// Reagiranje na pritiske tipaka na tipkovnici...
-			addKeyListener(keyClick);
+//			// Reagiranje na pritiske tipki na misu...
+//			addMouseListener(mouseClick);
+//			// Reagiranje na pomicanje pokazivaca misa...
+//			addMouseMotionListener(mouseMotion);
+//			// Reagiranje na pritiske tipaka na tipkovnici...
+//			addKeyListener(keyClick);
 			// Reagiranje na promjenu velicine platna,na zahtjev za
 			// crtanjem i slicno...
 			addGLEventListener(glEvent);
@@ -179,6 +216,10 @@ public class LineDrawing extends JFrame {
 					bresenham.drawLine(new Line(start, end));
 				}
 				gl2.glEnd();
+
+				if(Objects.nonNull(glLine)) {
+					glLine.run();
+				}
 			}
 		};
 
@@ -195,7 +236,7 @@ public class LineDrawing extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new LineDrawing());
+		SwingUtilities.invokeLater(() -> new LineDrawing2());
 	}
 
 }
