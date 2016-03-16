@@ -1,7 +1,9 @@
-package hr.fer.zemris.irg.vjezba1.task4;
+package hr.fer.zemris.irg.vjezba1.task4.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import hr.fer.zemris.irg.vjezba1.task4.Line;
 
 public class CustomModel implements DrawingModel {
 
@@ -9,19 +11,8 @@ public class CustomModel implements DrawingModel {
 	private List<DrawingModelListener> listeners = new ArrayList<>();
 
 	@Override
-	public int getSize() {
-		return lines.size();
-	}
-
-	@Override
-	public Line get(int index) {
-		return lines.get(index);
-	}
-
-	@Override
-	public void add(Line object) {
-		lines.add(object);
-		listeners.forEach(l -> l.objectsAdded(this));
+	public List<Line> getLines() {
+		return lines;
 	}
 
 	@Override

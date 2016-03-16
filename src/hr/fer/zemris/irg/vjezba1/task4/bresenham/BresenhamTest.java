@@ -1,4 +1,6 @@
-package hr.fer.zemris.irg.vjezba1.task4;
+package hr.fer.zemris.irg.vjezba1.task4.bresenham;
+
+import hr.fer.zemris.irg.vjezba1.task4.IPixelManager;
 
 public class BresenhamTest {
 

@@ -4,21 +4,27 @@ import java.awt.Point;
 
 public class Line {
 
-	private Point start;
-	private Point end;
+	public int xs;
+	public int ys;
 
-	public Line(Point start, Point end) {
-		this.start = start;
-		this.end = end;
+	public int xe;
+	public int ye;
+
+	public Line(int xs, int ys, int xe, int ye) {
+		super();
+		this.xs = xs;
+		this.ys = ys;
+		this.xe = xe;
+		this.ye = ye;
 	}
 
-	public void draw() {
-
+	public Line(Point start, Point end) {
+		this(start.x, start.y, end.x, end.y);
 	}
 
 	@Override
 	public String toString() {
-		return "LINE " + start.x + " " + start.y + " " + end.x + " " + end.y;
+		return "LINE " + xs + " " + ys + " " + xe + " " + ye;
 	}
 
 }

@@ -23,6 +23,11 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 
+import hr.fer.zemris.irg.vjezba1.task4.bresenham.BresenhamLDA;
+import hr.fer.zemris.irg.vjezba1.task4.model.CustomModel;
+import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModel;
+import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModelListener;
+
 public class LineDrawing extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -31,7 +36,8 @@ public class LineDrawing extends JFrame {
 		GLProfile.initSingleton();
 	}
 
-	private GLCanvas canvas = new CustomCanvas();
+	private DrawingModel model = new CustomModel();
+	private GLCanvas canvas = new CustomCanvas(model);
 
 	private Point start;
 	private Point end;
@@ -52,9 +58,14 @@ public class LineDrawing extends JFrame {
 		canvas.requestFocusInWindow();
 	}
 
+	@SuppressWarnings("serial")
 	private class CustomCanvas extends GLCanvas implements DrawingModelListener {
 
-		public CustomCanvas() {
+		private DrawingModel model;
+
+		public CustomCanvas(DrawingModel model) {
+			this.model = model;
+			model.addDrawingModelListener(this);
 			// Reagiranje na pritiske tipki na misu...
 			addMouseListener(mouseClick);
 			// Reagiranje na pomicanje pokazivaca misa...
@@ -85,7 +96,7 @@ public class LineDrawing extends JFrame {
 				// Napravi nesto
 				// ...
 				// Posalji zahtjev za ponovnim crtanjem...
-				display();
+//				display();
 			}
 		};
 
@@ -101,7 +112,7 @@ public class LineDrawing extends JFrame {
 				// Napravi nesto
 				// ...
 				// Posalji zahtjev za ponovnim crtanjem...
-				display();
+//				display();
 			}
 		};
 
@@ -122,8 +133,10 @@ public class LineDrawing extends JFrame {
 		private GLEventListener glEvent = new GLEventListener() {
 			@Override
 			public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
+
+				System.out.println("RESHAPE");
+
 				GL2 gl2 = glautodrawable.getGL().getGL2();
-				firstClick = false;
 				gl2.glViewport(0, 0, width, height);
 
 				gl2.glMatrixMode(GL2.GL_PROJECTION);
@@ -131,7 +144,8 @@ public class LineDrawing extends JFrame {
 				// coordinate system original lower left with width and
 				// height same as the window
 				GLU glu = new GLU();
-				glu.gluOrtho2D(0.0f, width, 0.0f, height);
+//				glu.gluOrtho2D(0.0f, width, 0.0f, height);
+				glu.gluOrtho2D(0.0f, width, height, 0.0f);
 
 				gl2.glMatrixMode(GL2.GL_MODELVIEW);
 				gl2.glLoadIdentity();
@@ -140,6 +154,8 @@ public class LineDrawing extends JFrame {
 				gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
 				gl2.glPointSize(1.0f);
 				gl2.glColor3f(0.0f, 0.0f, 0.0f);
+
+
 			}
 
 			@Override
@@ -152,31 +168,37 @@ public class LineDrawing extends JFrame {
 
 			@Override
 			public void display(GLAutoDrawable glautodrawable) {
+				System.out.println("DISPLAY");
 				GL2 gl2 = glautodrawable.getGL().getGL2();
 				gl2.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 				gl2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
 				gl2.glBegin(GL.GL_POINTS);
 				BresenhamLDA b = new BresenhamLDA(gl2::glVertex2i);
-				b.drawLine(100, 400, 100, 200);
-				b.drawLine(100, 100, 300, 101);
-				b.drawLine(10, 20, 600, 20);
-				b.drawLine(10, 400, 10, 10);
-				b.drawLine(15, 10, 15, 400);
-				b.drawLine(10, 400, 100, 5);
+//				BresenhamTest b = new BresenhamTest(gl2::glVertex2i);
+				model.getLines().forEach(b::drawLine);
+				if(firstClick) {
+					b.drawLine(new Line(start, end));
+				}
+//				b.drawLine(100, 400, 100, 200);
+//				b.drawLine(100, 100, 300, 101);
+//				b.drawLine(10, 20, 600, 20);
+//				b.drawLine(10, 400, 10, 10);
+//				b.drawLine(15, 10, 15, 400);
+//				b.drawLine(10, 400, 100, 5);
+				b.drawLine(299, 235, 65, 465);
 				gl2.glEnd();
 			}
 		};
 
 
 		protected void addLine() {
-			// TODO Auto-generated method stub
-
+			model.getLines().add(new Line(start.x, start.y, end.x, end.y));
 		}
 
 
 		@Override
-		public void objectsAdded(DrawingModel source) {
+		public void lineAdded(DrawingModel source) {
 			repaint();
 		}
 	}

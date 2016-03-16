@@ -1,7 +1,10 @@
-package hr.fer.zemris.irg.vjezba1.task4;
+package hr.fer.zemris.irg.vjezba1.task4.bresenham;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import hr.fer.zemris.irg.vjezba1.task4.IPixelManager;
+import hr.fer.zemris.irg.vjezba1.task4.Line;
 
 public class BresenhamLDA {
 
@@ -58,15 +61,25 @@ public class BresenhamLDA {
 	}
 
 	public void drawLine(int xs, int ys, int xe, int ye) {
-		this.p = new PointPair(xs, ys, xe, ye);
-		if (!(xs <= xe)) {
-			p.swapPoints();
-		}
-		if (ys <= ye) {
-			bresenhamPositive();
+		if(xs <= xe) {
+			this.p = new PointPair(xs, ys, xe, ye);
+			if(ys <= ye) {
+				bresenhamPositive(xs, ys, xe, ye);
+			} else {
+				bresenhamNegative(xs, ys, xe, ye);
+			}
 		} else {
-			bresenhamNegative();
+			this.p = new PointPair(xs, ys, xe, ye);
+			if(ys >= ye) {
+				bresenhamPositive(xe, ye, xs, ys);
+			} else {
+				bresenhamNegative(xe, ye, xs, ys);
+			}
 		}
+	}
+
+	public void drawLine(Line line) {
+		drawLine(line.xs, line.ys, line.xe, line.ye);
 	}
 
 	private abstract class AbstractBresenhamDrawing {
@@ -129,11 +142,13 @@ public class BresenhamLDA {
 		}.draw(pixel);
 	}
 
-	private void bresenhamPositive() {
+	private void bresenhamPositive(int xs, int ys, int xe, int ye) {
+		this.p = new PointPair(xs, ys, xe, ye);
 		bresenhamStrategy((p.ye - p.ys) <= p.xe - p.xs, this::bresenhamPositiveStrategy, PointPair::swapXYCoordinates);
 	}
 
-	private void bresenhamNegative() {
+	private void bresenhamNegative(int xs, int ys, int xe, int ye) {
+		this.p = new PointPair(xs, ys, xe, ye);
 		bresenhamStrategy(-(p.ye - p.ys) <= p.xe - p.xs, this::bresenhamNegativeStrategy,
 				PointPair::swapStartEndXYCoordinates);
 	}

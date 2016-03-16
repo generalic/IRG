@@ -1,9 +1,11 @@
-package hr.fer.zemris.irg.vjezba1.task4;
+package hr.fer.zemris.irg.vjezba1.task4.bresenham;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import hr.fer.zemris.irg.vjezba1.task4.IPixelManager;
 
 public class BresenhamLDAFunctionalTest {
 
