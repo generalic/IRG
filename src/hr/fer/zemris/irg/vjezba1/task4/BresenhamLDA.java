@@ -71,7 +71,7 @@ public class BresenhamLDA {
 		}
 	}
 
-	private void draw(int yf, int korekcija, BiConsumer<Integer, Integer> pixel, Predicate<Integer> condition,
+ 	private void draw(int yf, int korekcija, BiConsumer<Integer, Integer> pixel, Predicate<Integer> condition,
 			Function<Integer, Integer> yModifier) {
 		int a = 2 * (p.ye - p.ys);
 		int yc = p.ys;
