@@ -2,8 +2,6 @@ package hr.fer.zemris.irg.vjezba1.task4;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class BresenhamLDA {
 
@@ -71,28 +69,64 @@ public class BresenhamLDA {
 		}
 	}
 
- 	private void draw(int yf, int korekcija, BiConsumer<Integer, Integer> pixel, Predicate<Integer> condition,
-			Function<Integer, Integer> yModifier) {
-		int a = 2 * (p.ye - p.ys);
-		int yc = p.ys;
+	private abstract class AbstractBresenhamDrawing {
 
-		for (int x = p.xs; x <= p.xe; x++) {
-			// osvijetli_pixel(x, yc);
-			pixel.accept(x, yc);
-			yf = yf + a;
-			if (condition.test(yf)) {
-				yf = yf + korekcija;
-				yc = yModifier.apply(yc);
+		private int a = 2 * (p.ye - p.ys);
+		private int yc = p.ys;
+
+		private int yf;
+		private int korekcija;
+
+		public AbstractBresenhamDrawing(int yf, int korekcija) {
+			this.yf = yf;
+			this.korekcija = korekcija;
+		}
+
+		public final void draw(BiConsumer<Integer, Integer> pixelManager) {
+			for (int x = p.xs; x <= p.xe; x++) {
+				pixelManager.accept(x, yc);
+				yf = yf + a;
+				if (checkOffset(yf)) {
+					yf = yf + korekcija;
+					yc = calculateYc(yc);
+				}
 			}
 		}
+
+		protected abstract boolean checkOffset(int yf);
+
+		protected abstract int calculateYc(int yc);
+
 	}
 
 	private void bresenhamPositiveStrategy(BiConsumer<Integer, Integer> pixel) {
-		draw(-(p.xe - p.xs), -2 * (p.xe - p.xs), pixel, yf -> yf >= 0, yc -> yc + 1);
+		new AbstractBresenhamDrawing(-(p.xe - p.xs), -2 * (p.xe - p.xs)) {
+
+			@Override
+			protected boolean checkOffset(int yf) {
+				return yf >= 0;
+			}
+
+			@Override
+			protected int calculateYc(int yc) {
+				return yc + 1;
+			}
+		}.draw(pixel);
 	}
 
 	private void bresenhamNegativeStrategy(BiConsumer<Integer, Integer> pixel) {
-		draw((p.xe - p.xs), 2 * (p.xe - p.xs), pixel, yf -> yf <= 0, yc -> yc - 1);
+		new AbstractBresenhamDrawing((p.xe - p.xs), 2 * (p.xe - p.xs)) {
+
+			@Override
+			protected boolean checkOffset(int yf) {
+				return yf <= 0;
+			}
+
+			@Override
+			protected int calculateYc(int yc) {
+				return yc - 1;
+			}
+		}.draw(pixel);
 	}
 
 	private void bresenhamPositive() {
