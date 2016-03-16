@@ -11,50 +11,6 @@ public class BresenhamLDA {
 	private IPixelManager pixelManager;
 	private PointPair p;
 
-	private static class PointPair {
-
-		private int xs;
-		private int ys;
-
-		private int xe;
-		private int ye;
-
-		public PointPair(int xs, int ys, int xe, int ye) {
-			this.xs = xs;
-			this.ys = ys;
-			this.xe = xe;
-			this.ye = ye;
-		}
-
-		public void swapPoints() {
-			int tmp = xs;
-			xs = xe;
-			xe = tmp;
-			tmp = ys;
-			ys = ye;
-			ye = tmp;
-		}
-
-		public void swapXYCoordinates() {
-			int tmp = xe;
-			xe = ye;
-			ye = tmp;
-			tmp = xs;
-			xs = ys;
-			ys = tmp;
-		}
-
-		public void swapStartEndXYCoordinates() {
-			int tmp = xe;
-			xe = ys;
-			ys = tmp;
-			tmp = xs;
-			xs = ye;
-			ye = tmp;
-		}
-
-	}
-
 	public BresenhamLDA(IPixelManager pixelManager) {
 		super();
 		this.pixelManager = pixelManager;
