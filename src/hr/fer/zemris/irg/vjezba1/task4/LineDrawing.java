@@ -1,32 +1,16 @@
 package hr.fer.zemris.irg.vjezba1.task4;
 
-import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
-
 import hr.fer.zemris.irg.vjezba1.task4.bresenham.BresenhamLDA;
 import hr.fer.zemris.irg.vjezba1.task4.model.CustomModel;
 import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModel;
 import hr.fer.zemris.irg.vjezba1.task4.model.DrawingModelListener;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class LineDrawing extends JFrame {
 
@@ -49,7 +33,7 @@ public class LineDrawing extends JFrame {
 	}
 
 	private void initGUI() {
-		setTitle("Primjer prikaza obojanog trokuta");
+		setTitle("Line Drawing");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		getContentPane().add(canvas, BorderLayout.CENTER);
